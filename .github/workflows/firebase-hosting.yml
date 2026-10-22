@@ -1,0 +1,38 @@
+name: Publicar site no Firebase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'firebase.json'
+      - '.firebaserc'
+      - 'package.json'
+      - '.github/workflows/firebase-hosting.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-live
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Verificar o codigo
+        run: npm test
+      - name: Publicar no Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
+        with:
+          firebaseServiceAccount: '${{ secrets.FIREBASE_HOSTING_SERVICE_ACCOUNT }}'
+          projectId: historico-orcamentario-cau-pr
+          channelId: live
+          firebaseToolsVersion: '15.34.1'
