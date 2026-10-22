@@ -12,6 +12,15 @@
     ]
   },
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
+    "database": "(default)",
+    "location": "southamerica-east1",
+    "edition": "standard"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
   }
 }
