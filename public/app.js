@@ -9,12 +9,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAv2LqFU9nRf_FEaul0IoOiCX2vaNMHtKk",
-  authDomain: "historico-orcamentario-caupr.firebaseapp.com",
-  projectId: "historico-orcamentario-caupr",
-  storageBucket: "historico-orcamentario-caupr.firebasestorage.app",
-  messagingSenderId: "40791981660",
-  appId: "1:40791981660:web:b9770067e814b0baf3f099"
+  "apiKey": "AIzaSyAkloEU1am_WTHdO3FIFkPaiX885bx8uuQ",
+  "authDomain": "historico-orcamentario-cau-pr.firebaseapp.com",
+  "projectId": "historico-orcamentario-cau-pr",
+  "storageBucket": "historico-orcamentario-cau-pr.firebasestorage.app",
+  "messagingSenderId": "334076153916",
+  "appId": "1:334076153916:web:d69f099641d8af9c88b339"
 };
 
 const app = initializeApp(firebaseConfig);
