@@ -2,6 +2,16 @@
 
 Aplicação estática no Firebase Hosting. O navegador usa Firebase Authentication e Firestore para acesso e armazenamento dos retratos importados. `public/app.js` mantém os cálculos e a importação existente; `public/pdf-import.js` lê a coluna Na Data dos PDFs SISCONT.
 
+## Projeto atual e publicação pela nuvem
+
+O código principal e seu histórico ficam em https://github.com/brunosimer/Historico-orcamentario-caupr.
+O site e os dados ficam no projeto Firebase `historico-orcamentario-cau-pr`, administrado por `bruno.simer@gmail.com`.
+Endereço do site: https://historico-orcamentario-cau-pr.web.app/.
+
+A publicação é executada pelo GitHub Actions. Uma alteração em `public`, `firebase.json`, `.firebaserc`, `package.json` ou no workflow, salva na branch `main`, executa os testes e publica o site. Também é possível abrir Actions, escolher **Publicar site no Firebase** e usar **Run workflow**. Não é necessário manter este código em um computador específico.
+
+A credencial de publicação fica no segredo `FIREBASE_HOSTING_SERVICE_ACCOUNT` do GitHub Actions. Ela permite publicar somente Hosting; os dados e usuários continuam no Firestore e no Firebase Authentication. O workflow não publica alterações de regras ou contas de usuários.
+
 ## Laboratório Implanta
 
 A entrada fica abaixo de Minha conta. `public/lab-bootstrap.js` identifica a conta autorizada e solicita `implantaLab/module` com `getDocFromServer`. O servidor restringe a leitura pelo UID e e-mail presentes no token Firebase. As regras negam listagem e escrita de clientes nessa coleção. O módulo, a documentação e as respostas preservadas não são arquivos de Hosting.
@@ -24,7 +34,7 @@ O laboratório também lê os documentos privados `documentation` e `reconciliat
 
 ## Publicação e reversão
 
-Revise o diff e execute os testes antes de usar `firebase deploy --only firestore:rules,hosting --project historico-orcamentario-caupr`. Confira as regras publicadas e a release de Hosting antes da alteração e preserve seus identificadores. Uma nova publicação de Hosting não publica automaticamente os documentos privados do laboratório.
+Revise as alterações e execute os testes antes de usar `npx -y firebase-tools@latest deploy --only firestore:rules,hosting --project historico-orcamentario-cau-pr --account bruno.simer@gmail.com`. Confira as regras publicadas e a release de Hosting antes da alteração e preserve seus identificadores. Uma nova publicação de Hosting não publica automaticamente os documentos privados do laboratório.
 
 `firebase.json` serve `public` e configura revalidação dos arquivos de inicialização do laboratório. `index.html` inclui uma referência versionada a `app.js` para atualização da sessão existente. Nenhuma regra pode ser substituída por uma cópia antiga sem verificar as coleções em uso: o painel utiliza `snapshotsDetalhe`, `config/categorias`, `config/apelidosContas` e `users`.
 
