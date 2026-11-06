@@ -22,3 +22,61 @@
 @media(max-width:900px){.lab .lab-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.lab .lab-execution{gap:24px}.lab .lab-tools-button{margin-left:0}}
 @media(max-width:600px){.lab .card{padding:16px}.lab .lab-fields,.lab .lab-execution,.lab .lab-study-items{grid-template-columns:minmax(0,1fr)}.lab input[type=date],.lab input[type=month],.lab input[type=search],.lab select{font-size:16px}.lab .lab-tabs .btn{flex:1 1 auto}.lab .lab-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.lab .lab-kpi-money{font-size:17px}.lab .lab-actions .btn{flex:0 1 auto}.lab .lab-date-field{flex-wrap:wrap}.lab .lab-date-field input{flex-basis:170px}.lab .lab-meta{grid-template-columns:1fr}.lab th:first-child,.lab td:first-child{min-width:175px}.lab th,.lab td{padding:10px 9px}}
 @media(pointer:coarse){.lab .btn,.lab .lab-study-item{min-height:44px}}
+
+/* Mesma apresentação da Situação atual: as classes cc-*, conta-* e pbar são
+   compartilhadas com styles.css. Estas regras anulam somente as aproximações
+   de tipografia e cartões aplicadas acima ao laboratório inteiro. */
+.lab .lab-current-copy{font-family:'Inter',sans-serif;color:#211F1C;min-width:0}
+.lab .lab-current-copy h2{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;color:#211F1C;margin:0 0 16px}
+.lab .lab-current-copy p{line-height:normal}
+.lab .lab-current-copy .card{background:#FFFFFF;border:1px solid #E0DACB;border-radius:10px;padding:18px 20px;margin:0 0 18px;box-shadow:0 1px 2px rgba(33,31,28,.04)}
+.lab .lab-current-copy .muted{color:#928D80;font-size:13px}
+.lab .lab-current-copy .source-note{font-size:12px;color:#625e53;overflow-wrap:anywhere;line-height:1.5}
+.lab .lab-current-copy .lab-current-reference{margin:0 0 12px}
+.lab .lab-current-copy .lab-current-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px;margin-bottom:18px}
+.lab .lab-current-copy .lab-current-detail-metrics{margin-bottom:20px}
+.lab .lab-current-copy .metric{background:#F5F1E7;border-radius:8px;padding:12px 14px;min-width:0}
+.lab .lab-current-copy .metric .label{font-size:11px;color:#928D80;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.lab .lab-current-copy .metric .value{font:600 20px 'IBM Plex Mono',monospace;color:#211F1C;overflow-wrap:anywhere}
+.lab .lab-current-copy .metric.blue .value{color:#2E5A8C}
+.lab .lab-current-copy .metric.orange .value{color:#C4703E}
+.lab .lab-current-copy .lab-current-metric-unavailable .value{font-size:16px}
+.lab .lab-current-copy .cc-geral{background:#F5F1E7;border:2px solid #C4703E;border-radius:8px;padding:16px 18px;margin-bottom:18px}
+.lab .lab-current-copy .cc-name{font-weight:600;font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.lab .lab-current-copy .cc-geral .cc-name{font-size:15px}
+.lab .lab-current-copy .cc-cat{font-size:10px;color:#928D80;text-transform:uppercase;letter-spacing:.03em;margin:2px 0 10px}
+.lab .lab-current-copy .cc-orcado{font-size:12px;color:#6B6862;margin-bottom:12px}
+.lab .lab-current-copy .cc-orcado strong{color:#211F1C;font-family:'IBM Plex Mono',monospace}
+.lab .lab-current-copy .geral-bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:4px 28px}
+.lab .lab-current-copy .cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px}
+.lab .lab-current-copy .cc-card{background:#F5F1E7;border:1px solid #E0DACB;border-radius:8px;padding:14px 16px;min-width:0;display:flex;flex-direction:column}
+.lab .lab-current-copy .cc-card.clickable{cursor:pointer;transition:box-shadow .15s,transform .15s}
+.lab .lab-current-copy .cc-card.clickable:hover{box-shadow:0 3px 10px rgba(33,31,28,.14);transform:translateY(-1px)}
+.lab .lab-current-copy .cc-card.clickable:focus-visible{outline:3px solid #2E5A8C;outline-offset:3px}
+.lab .lab-current-copy .pbar-row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font:400 11px 'IBM Plex Mono',monospace;color:#6B6862;margin-bottom:3px}
+.lab .lab-current-copy .pbar-row span:last-child{margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lab .lab-current-copy .pbar{background:#E0DACB;border-radius:4px;height:7px;overflow:hidden;margin-bottom:10px}
+.lab .lab-current-copy .pbar-fill{height:100%;border-radius:4px}
+.lab .lab-current-copy .pbar-fill.empenho{background:#2E5A8C}
+.lab .lab-current-copy .pbar-fill.liquidado{background:#5F8054}
+.lab .lab-current-copy .pbar-fill.pago{background:#C4703E}
+.lab .lab-current-copy .pbar-fill.over{background:#B5473A}
+.lab .lab-current-copy .lab-current-unavailable{background:#E0DACB}
+.lab .lab-current-copy .cc-saldos{display:flex;gap:8px;margin-top:4px}
+.lab .lab-current-copy .cc-saldo-box{flex:1;background:#FFFFFF;border:1px solid #E0DACB;border-radius:6px;padding:8px 10px;min-width:0;box-sizing:border-box}
+.lab .lab-current-copy .cc-saldo-label{font-size:10px;color:#928D80;text-transform:uppercase;letter-spacing:.02em;margin-bottom:3px}
+.lab .lab-current-copy .cc-saldo-value{font:600 13px 'IBM Plex Mono',monospace;color:#211F1C;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.lab .lab-current-copy .cc-card .cc-saldos,.lab .lab-current-copy .conta-row .cc-saldos{display:grid;grid-template-columns:1fr;margin-top:auto;gap:6px}
+.lab .lab-current-copy .cc-card .cc-saldo-box,.lab .lab-current-copy .conta-row .cc-saldo-box{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:12px;align-items:center;padding:10px}
+.lab .lab-current-copy .cc-card .cc-saldo-label,.lab .lab-current-copy .conta-row .cc-saldo-label{margin:0}
+.lab .lab-current-copy .cc-geral .cc-saldos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.lab .lab-current-copy .conta-row{background:#F5F1E7;border:1px solid #E0DACB;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.lab .lab-current-copy .conta-row-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.lab .lab-current-copy .conta-nome{font-weight:600;font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.lab .lab-current-copy .lab-current-published{margin:12px 0 0}
+.lab .lab-current-copy .lab-current-back{margin-bottom:16px;font:400 13px 'Inter',sans-serif;background:#FFFFFF;color:#211F1C;border:1px solid #D9D2C1;border-radius:6px;padding:9px 16px}
+.lab .lab-current-copy .lab-current-detail-date{margin:2px 0 18px}
+.lab .lab-current-copy .lab-current-global-body{margin-top:16px}
+.lab .lab-current-copy .lab-current-global summary,.lab .lab-current-copy .lab-current-sources summary{font-family:'Inter',sans-serif;font-size:13px}
+@media(max-width:600px){.lab .lab-current-copy .card{padding:18px 20px}.lab .lab-current-copy .metric .value{font-size:18px}.lab .lab-current-copy .lab-current-metric-unavailable .value{font-size:16px}}
+@media(max-width:380px){.lab .lab-current-copy .cc-card .cc-saldo-box,.lab .lab-current-copy .conta-row .cc-saldo-box{grid-template-columns:1fr;gap:4px}.lab .lab-current-copy .cc-saldo-value{font-size:12px}}

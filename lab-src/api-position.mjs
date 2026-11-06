@@ -1,10 +1,11 @@
-import {buildQuery, cents, collect} from './implanta-core.mjs';
+import {buildQuery, cents, collect,flattenRows} from './implanta-core.mjs';
 import {reconcileSnapshot} from './reconciliation-core.mjs';
 
 const DEMO = 'DemonstrativoEmpenhosPagamentos';
 const CENTERS = 'DespesasCentroCusto';
 const METRICS = Object.freeze(['orcado', 'empenhado', 'liquidado', 'pago', 'saldoOrc', 'saldoLiq', 'saldoPagar']);
 const ACCOUNT_CODE = /^\d+(?:\.\d+)+$/;
+const CENTER_STAGE_FIELDS=Object.freeze({orcado:'ORCADO',empenhado:'EMPENHADOEXERCICIO',liquidado:'LIQUIDADO_EXERCICIO',pago:'PAGO_EXERCICIO',saldoOrc:'SALDO_ORCAMENTARIO',saldoLiq:'SALDO_A_LIQUIDAR',saldoPagar:'SALDO_A_PAGAR'});
 const issue = (code, message, details = {}) => ({code, message, ...details});
 const sorted = (items) => items.sort((a, b) => a.code.localeCompare(b.code, 'pt-BR', {numeric: true}));
 
@@ -146,6 +147,28 @@ function normalizeCenters(record, issues) {
   return sorted(result);
 }
 
+/** Only explicit center+account keys may supply a center's expenditure stages.
+ * Global analytical accounts and generic VALOR_TOTAL never fill these fields. */
+export function attachExplicitCenterStages(centers,demoRecord){
+  const known=new Set(centers.map(center=>center.id));const keyed=new Map();
+  for(const {row}of flattenRows(demoRecord?.data||[])){
+    if(row.ANALITICA!==true||typeof row.CENTRO_CODIGO!=='string'||!known.has(row.CENTRO_CODIGO))continue;
+    const code=typeof row.CONTA_CODIGO==='string'?row.CONTA_CODIGO:row.CODIGO;if(!ACCOUNT_CODE.test(code||''))continue;
+    const key=JSON.stringify([row.CENTRO_CODIGO,code]);if(!keyed.has(key))keyed.set(key,[]);keyed.get(key).push(row);
+  }
+  return centers.map(center=>{
+    const seen=new Set();const makeAccount=(account,rows=[])=>{
+      const duplicate=rows.length>1,raw=rows.length===1?rows[0]:null;
+      return {...account,...Object.fromEntries(METRICS.map(key=>[key,raw?cents(raw[CENTER_STAGE_FIELDS[key]]):null])),stageSource:raw?DEMO:null,issues:[...(account.issues||[]),...(duplicate?[issue('duplicate_center_stages','Mais de uma linha de estágios para a mesma conta e centro; valores indisponíveis.')]:[])]};
+    };
+    const accounts=center.accounts.map(account=>{seen.add(account.code);return makeAccount(account,keyed.get(JSON.stringify([center.id,account.code]))||[]);});
+    for(const [key,rows]of keyed){const [centerId,code]=JSON.parse(key);if(centerId!==center.id||seen.has(code))continue;accounts.push(makeAccount({id:key,code,name:String(rows[0].CONTA_NOME||rows[0].NOME||'Conta sem descrição'),value:null},rows));}
+    const metrics=Object.fromEntries(METRICS.map(key=>[key,center.issues.some(i=>i.code==='incomplete_source')?null:sumPosition(accounts,key)]));
+    const stageAvailable=accounts.length>0&&accounts.every(a=>a.stageSource===DEMO);
+    return {...center,...metrics,accounts:sorted(accounts),stageSource:stageAvailable?DEMO:null};
+  });
+}
+
 /** Pure API-only model. References and source coverage remain separate from upload reconciliation. */
 export function normalizeApiPosition(date, demoRecord, centersRecord) {
   validatePositionDate(date);
@@ -166,6 +189,8 @@ export function normalizeApiPosition(date, demoRecord, centersRecord) {
     sources[1] = {...sources[1], ok: false, error: error.message};
     issues.push(issue('invalid_source', `${CENTERS}: ${error.message}`, {endpoint: CENTERS}));
   }
+  centers=attachExplicitCenterStages(centers,sources[0].ok?demoRecord:null);
+  if(centers.some(center=>!center.stageSource))issues.push(issue('center_stages_unavailable','A API por centro e conta não separa orçamento, empenhado, liquidado e pago nesta resposta. Esses indicadores permanecem indisponíveis; valores globais não são atribuídos aos centros.',{endpoint:DEMO}));
   if (sources[0].ok && !accounts.length) issues.push(issue('empty_accounts', 'A fonte não retornou contas analíticas utilizáveis; a ausência não representa saldo zero.', {endpoint: DEMO}));
   if (sources[1].ok && !centers.length) issues.push(issue('empty_centers', 'A fonte não retornou centros analíticos utilizáveis; a ausência não representa saldo zero.', {endpoint: CENTERS}));
   const timestamps = sources.map((source) => source.collectedAt).filter((value) => value && Number.isFinite(Date.parse(value)));
