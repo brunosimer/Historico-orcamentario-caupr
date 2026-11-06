@@ -3,6 +3,7 @@ import {reconcileSnapshot} from './reconciliation-core.mjs';
 
 const DEMO = 'DemonstrativoEmpenhosPagamentos';
 const CENTERS = 'DespesasCentroCusto';
+const API_MONTH_KEYS=Object.freeze('JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ'.split(' '));
 const METRICS = Object.freeze(['orcado', 'empenhado', 'liquidado', 'pago', 'saldoOrc', 'saldoLiq', 'saldoPagar']);
 const ACCOUNT_CODE = /^\d+(?:\.\d+)+$/;
 const CENTER_STAGE_FIELDS=Object.freeze({orcado:'ORCADO',empenhado:'EMPENHADOEXERCICIO',liquidado:'LIQUIDADO_EXERCICIO',pago:'PAGO_EXERCICIO',saldoOrc:'SALDO_ORCAMENTARIO',saldoLiq:'SALDO_A_LIQUIDAR',saldoPagar:'SALDO_A_PAGAR'});
@@ -130,15 +131,18 @@ function normalizeCenters(record, issues) {
       const value = duplicate ? null : cents(rows[0].VALOR_TOTAL);
       if (duplicate) center.issues.push(issue('duplicate', 'Combinação centro e conta repetida; valores não foram somados.', {accountCode, count: rows.length}));
       else if (value === null) center.issues.push(issue('missing_or_invalid_money', 'Valor ausente ou inválido; não foi convertido em zero.', {accountCode, field: 'VALOR_TOTAL'}));
-      center.accounts.push({id: JSON.stringify([center.code, accountCode]), code: accountCode, name: String(rows[0].NOME_CONTA || accountCode), value});
+      const monthly=Object.fromEntries(API_MONTH_KEYS.map((month,index)=>[String(index+1).padStart(2,'0'),duplicate?null:cents(rows[0]['VALOR_'+month])]));
+      center.accounts.push({id: JSON.stringify([center.code, accountCode]), code: accountCode, name: String(rows[0].NOME_CONTA || accountCode), value,monthly});
     }
     sorted(center.accounts);
-    const value = center.issues.some((entry) => entry.code === 'incomplete_source') ? null : sumPosition(center.accounts, 'value');
     if (invalidSource && !center.issues.some((entry) => entry.code === 'incomplete_source')) {
       center.issues.push(issue('incomplete_source', 'Há linhas de centros excluídas; o total completo da fonte está indisponível.'));
     }
+    const incomplete=center.issues.some(entry=>entry.code==='incomplete_source');
+    const value=incomplete?null:sumPosition(center.accounts,'value');
+    const monthly=Object.fromEntries(API_MONTH_KEYS.map((month,index)=>{const key=String(index+1).padStart(2,'0');return [key,incomplete?null:sumPosition(center.accounts.map(account=>({value:account.monthly[key]})),'value')];}));
     center.issues.push(issue('unconfirmed_center_stage', 'VALOR_TOTAL é o valor publicado por centro; o estágio contábil não foi homologado.'));
-    result.push({id: center.id, code: center.code, name: String(center.name), value, accounts: center.accounts, issues: center.issues});
+    result.push({id: center.id, code: center.code, name: String(center.name), value, monthly,accounts: center.accounts, issues: center.issues});
   }
   if (result.length) issues.push(issue('unconfirmed_center_stage', 'Valores por centro não são identificados como empenhado, liquidado, pago ou dotação; não há rateio da API global.', {endpoint: CENTERS}));
   if (record.data.some((row) => row?.ANALITICO === true && cents(row.ORCAMENTO) === 0n)) {
