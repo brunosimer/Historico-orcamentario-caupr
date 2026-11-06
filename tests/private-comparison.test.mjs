@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-const source=fs.readFileSync(new URL('../lab-src/laboratory.mjs',import.meta.url),'utf8').replace(/^import[^\n]+\n/gm,'').replace('export function mountLaboratory','function mountLaboratory')+'\nglobalThis.mount=mountLaboratory;';
+const source=fs.readFileSync(new URL('../lab-src/laboratory.mjs',import.meta.url),'utf8').split('\nexport function mountLaboratory(')[0].replace(/^import[^\n]+\n/gm,'')+'\nglobalThis.mount=mountLegacyLaboratory;';
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve};};
 const tick=()=>new Promise(r=>setImmediate(r));
 function setup(){

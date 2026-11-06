@@ -14,11 +14,17 @@ A credencial de publicação fica no segredo `FIREBASE_HOSTING_SERVICE_ACCOUNT` 
 
 ## Laboratório Implanta
 
+A versão de novembro de 2026 mantém os filtros abertos no topo e consulta a API sem exigir retratos. A visão geral apresenta os estágios globais por conta; recortes de centro usam somente o valor publicado pela fonte, sem rateio nem atribuição de estágio ainda não homologado. A conciliação com retratos é uma ação separada.
+
+Em **Estudos e comparações**, duas datas compartilham uma única seleção de uma ou várias contas, ou de um ou vários centros. Ausências e duplicatas não viram zero, e totais com cobertura incompleta ficam indisponíveis. As datas são solicitadas pelo usuário; a interface identifica as referências mensais efetivas e não promete corte diário dessas fontes.
+
+O botão **Auditoria** consulta novamente as fontes até a referência do filtro, inicializado em hoje no fuso de São Paulo a cada abertura. O relatório de junho permanece no histórico, separado da execução atual. A auditoria apresenta cobertura, duplicidades e coerência aritmética; não transforma igualdade numérica em homologação do estágio contábil.
+
 A entrada fica abaixo de Minha conta. `public/lab-bootstrap.js` identifica a conta autorizada e solicita `implantaLab/module` com `getDocFromServer`. O servidor restringe a leitura pelo UID e e-mail presentes no token Firebase. As regras negam listagem e escrita de clientes nessa coleção. O módulo, a documentação e as respostas preservadas não são arquivos de Hosting.
 
 `lab-src/implanta-core.mjs` valida períodos e URLs, consulta doze fontes públicas com timeout/limite de bytes, preserva JSON/bytes/hash e usa centavos BigInt. `lab-src/laboratory.mjs` oferece exploração, gráficos de populações selecionadas e comparação somente leitura com retratos. Consultas novas ficam na sessão; não há sincronização automática ou escrita nos retratos pelo laboratório.
 
-`lab-src/dashboard.mjs` recria a visão inicial com categorias, datas, sete indicadores, cartões de centros e detalhes por orçamento, conta, mês e origem. `lab-src/reconciliation-core.mjs` cruza códigos contábeis e mapeamentos explícitos, separando a API global por conta da execução por centro. Duplicatas e valores incompletos ficam indisponíveis. Filtros de categoria não rateiam a API global. As diferenças seguem API menos upload. Os CSVs de conferência usam valores em reais e neutralizam fórmulas em textos. Os dados oficiais do painel continuam provenientes dos uploads.
+`lab-src/api-position.mjs` normaliza as posições mensais e mantém fontes parciais ou indisponíveis explícitas. `dashboard.mjs` apresenta filtros no topo, resumo e quadros de execução ou saldos. `studies.mjs` aplica uma seleção única às duas posições, com listas e resultados paginados. `workspace.mjs` separa consulta, estudos, auditoria nova, conciliação e documentos históricos. `reconciliation-core.mjs` cruza códigos contábeis e mapeamentos explícitos somente na conferência com retratos. Duplicatas e valores incompletos ficam indisponíveis. Filtros de centro ou categoria não rateiam a API global. As diferenças de conciliação seguem API menos retrato; as comparações entre datas seguem B menos A. Os CSVs usam valores em reais e neutralizam fórmulas em textos. O painel oficial fora do laboratório continua usando os uploads.
 
 O formatador das telas existentes também inclui o prefixo `R$`, agrupamento por ponto e duas casas decimais; percentuais, códigos e datas conservam suas representações próprias.
 
